@@ -1,3 +1,4 @@
+using LifeEcommerce.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LifeEcommerce.Controllers
@@ -14,8 +15,9 @@ namespace LifeEcommerce.Controllers
         }
 
         [HttpGet(Name = "GetProducts")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string path)
         {
+           
             return Ok();
         }
     }
