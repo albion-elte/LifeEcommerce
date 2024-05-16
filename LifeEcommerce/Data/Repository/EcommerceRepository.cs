@@ -1,4 +1,5 @@
 ﻿using LifeEcommerce.Data.Repository.IRepository;
+using System.Linq.Expressions;
 
 namespace LifeEcommerce.Data.Repository
 {
@@ -36,6 +37,21 @@ namespace LifeEcommerce.Data.Repository
             var result = _dbContext.Set<Tentity>();
 
             return result;
+        }
+
+        public IQueryable<Tentity> GetByCondition(Expression<Func<Tentity, bool>> expression)
+        {
+            return _dbContext.Set<Tentity>().Where(expression);
+        }
+
+        public IQueryable<Tentity> GetById(Expression<Func<Tentity, bool>> expression)
+        {
+            return _dbContext.Set<Tentity>().Where(expression);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
 
         public void Update(Tentity entity)

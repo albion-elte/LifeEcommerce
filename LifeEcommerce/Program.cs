@@ -1,10 +1,22 @@
+using AutoMapper;
 using LifeEcommerce.Data;
+using LifeEcommerce.Data.Repository;
+using LifeEcommerce.Data.Repository.IRepository;
+using LifeEcommerce.Helpers;
+using LifeEcommerce.Services.IService;
+using LifeProduct.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var mapperConfiguration = new MapperConfiguration(
+                        mc => mc.AddProfile(new AutoMapperConfigurations()));
+
 // Add services to the container.
 builder.Services.AddDbContext<LifeEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
