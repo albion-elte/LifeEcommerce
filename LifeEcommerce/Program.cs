@@ -12,6 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 var mapperConfiguration = new MapperConfiguration(
                         mc => mc.AddProfile(new AutoMapperConfigurations()));
 
+IMapper mapper = mapperConfiguration.CreateMapper();
+
+builder.Services.AddSingleton(mapper);
+
 // Add services to the container.
 builder.Services.AddDbContext<LifeEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

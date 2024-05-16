@@ -13,9 +13,10 @@ namespace LifeEcommerce.Services.IService
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
         public async Task CreateProduct(ProductCreateDto product)
@@ -47,7 +48,7 @@ namespace LifeEcommerce.Services.IService
             throw new NotImplementedException();
         }
 
-        public async Task<PagedInfo<Product>> ProductsListView(string search, int page, int pageSize, int categoryId)
+        public async Task<PagedInfo<ProductDto>> ProductsListView(string search, int page, int pageSize, int categoryId)
         {
             Expression<Func<Product, bool>> condition = x => x.Name.Contains(search) || x.Description.Contains(search);
 
@@ -64,12 +65,16 @@ namespace LifeEcommerce.Services.IService
 
             products = products.WhereIf(!string.IsNullOrEmpty(search), condition);
 
-            var pagedProducts = new PagedInfo<Product>()
+            var productsList = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var mappedProducts = _mapper.Map<List<ProductDto>>(productsList);
+
+            var pagedProducts = new PagedInfo<ProductDto>()
             {
                 TotalCount = await products.CountAsync(),
                 Page = page,
                 PageSize = pageSize,
-                Items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync()
+                Items = mappedProducts
             };
 
             return pagedProducts;

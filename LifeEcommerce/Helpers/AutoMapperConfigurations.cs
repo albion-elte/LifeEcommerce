@@ -10,6 +10,9 @@ namespace LifeEcommerce.Helpers
         {
             CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<ProductCreateDto, Product>().ReverseMap();
+
+            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<ProductDto, Product>().ReverseMap();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace LifeEcommerce.Controllers
         }
 
         [HttpGet(Name = "GetProducts")]
-        public async Task<IActionResult> Get(string searchText, int page = 1, int pageSize = 10, int categoryId = 0)
+        public async Task<IActionResult> Get(string? searchText, int page = 1, int pageSize = 10, int categoryId = 0)
         {
             var products = await _productService.ProductsListView(searchText, page, pageSize, categoryId);
 
