@@ -8,8 +8,8 @@ namespace LifeEcommerce.Services.IService
     {
         Task CreateProduct(ProductCreateDto product);
         Task DeleteProduct(int id);
-        Task GetProduct(int id);
-        Task UpdateProduct(Product product);
+        Task<Product> GetProduct(int id);
+        Task UpdateProduct(ProductDto product);
         Task<List<Product>> GetAllProducts();
         Task<PagedInfo<ProductDto>> ProductsListView(string search, int page, int pageSize, int categoryId = 0);
     }

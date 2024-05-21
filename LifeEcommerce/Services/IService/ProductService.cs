@@ -28,19 +28,29 @@ namespace LifeEcommerce.Services.IService
             await _productRepository.SaveChangesAsync();
         }
 
-        public Task DeleteProduct(int id)
+        public async Task DeleteProduct(int id)
         {
-            throw new NotImplementedException();
+            var productToDelete = await _productRepository.GetById(x => x.Id == id).FirstOrDefaultAsync();
+
+            _productRepository.Delete(productToDelete);
+
+            await _productRepository.SaveChangesAsync();
         }
 
         public Task<List<Product>> GetAllProducts()
         {
-            throw new NotImplementedException();
+            var products = _productRepository.GetAll();
+
+            return products.ToListAsync();
         }
 
-        public Task GetProduct(int id)
+        public async Task<Product> GetProduct(int id)
         {
-            throw new NotImplementedException();
+            Expression<Func<Product, bool>> expression = product => product.Id == id;
+
+            var product = _productRepository.GetById(expression);
+
+            return await product.FirstAsync();
         }
 
         public Task<PagedInfo<Product>> ProductsListView(int page, int pageSize)
@@ -80,9 +90,22 @@ namespace LifeEcommerce.Services.IService
             return pagedProducts;
         }
 
-        public Task UpdateProduct(Product product)
+        public async Task UpdateProduct(ProductDto product)
         {
-            throw new NotImplementedException();
+            var productToUpdate = await GetProduct(product.Id);
+
+            if (productToUpdate != null) 
+            {
+                productToUpdate.Price = product.Price;
+                productToUpdate.Seller = product.Seller;
+                productToUpdate.Name = product.Name;
+                productToUpdate.ImageUrl = product.ImageUrl;
+                productToUpdate.CategoryId = product.CategoryId;
+            }
+
+            _productRepository.Update(productToUpdate);
+
+            await _productRepository.SaveChangesAsync();
         }
     }
 }

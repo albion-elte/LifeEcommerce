@@ -18,18 +18,50 @@ namespace LifeEcommerce.Controllers
             _productService = productService;
         }
 
-        [HttpGet(Name = "GetProducts")]
-        public async Task<IActionResult> Get(string? searchText, int page = 1, int pageSize = 10, int categoryId = 0)
+        [HttpGet(Name = "ProductsListView")]
+        public async Task<IActionResult> ProductsListView(string? searchText, int page = 1, int pageSize = 10, int categoryId = 0)
         {
             var products = await _productService.ProductsListView(searchText, page, pageSize, categoryId);
 
             return Ok(products);
         }
 
-        [HttpPost(Name = "CreateProducts")]
+        [HttpGet("all",Name = "GetProducts")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _productService.GetAllProducts();
+
+            return Ok(products);
+        }
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var product = await _productService.GetProduct(int.Parse(id));
+
+            return Ok(product);
+        }
+
+        [HttpPost(Name = "CreateProduct")]
         public async Task<IActionResult> Create(ProductCreateDto productToCreate)
         {
             await _productService.CreateProduct(productToCreate);
+
+            return Ok();
+        }
+
+        [HttpPut(Name = "UpdateProduct")]
+        public async Task<IActionResult> Update(ProductDto productToUpdate)
+        {
+            await _productService.UpdateProduct(productToUpdate);
+
+            return Ok();
+        }
+
+        [HttpDelete(Name = "DeleteProduct")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _productService.DeleteProduct(id);
 
             return Ok();
         }
