@@ -2,6 +2,7 @@ using LifeEcommerce.Models.Dtos.Product;
 using LifeEcommerce.Services;
 using LifeEcommerce.Services.IService;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace LifeEcommerce.Controllers
 {
@@ -11,11 +12,15 @@ namespace LifeEcommerce.Controllers
     {
         private readonly ILogger<ProductsController> _logger;
         private readonly IProductService _productService;
+        private readonly ImageUploadService _imageUploadService;
+        private readonly IConfiguration _configuration;
 
-        public ProductsController(ILogger<ProductsController> logger, IProductService productService)
+        public ProductsController(ILogger<ProductsController> logger, IProductService productService, ImageUploadService imageUploadService, IConfiguration configuration)
         {
             _logger = logger;
             _productService = productService;
+            _imageUploadService = imageUploadService;
+            _configuration = configuration;
         }
 
         [HttpGet(Name = "ProductsListView")]
@@ -30,6 +35,20 @@ namespace LifeEcommerce.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = await _productService.GetAllProducts();
+
+            //try
+            //{
+            //    int a = 1;
+            //    int b = 0;
+
+            //    int c = a / b;
+            //}
+            //catch(Exception ex)
+            //{
+            //    _logger.LogError(ex, "Error Life");
+            //    _logger.LogInformation(ex, "Information Life");
+            //    _logger.LogDebug(ex, "Debug Life");
+            //}
 
             return Ok(products);
         }
@@ -64,6 +83,14 @@ namespace LifeEcommerce.Controllers
             await _productService.DeleteProduct(id);
 
             return Ok();
+        }
+
+        [HttpPost("UploadImage")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            var uploadedImage = await _imageUploadService.UploadPicture(file, _configuration);
+
+            return Ok(uploadedImage);
         }
     }
 }

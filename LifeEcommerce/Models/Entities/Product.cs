@@ -1,4 +1,6 @@
-﻿namespace LifeEcommerce.Models.Entities
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace LifeEcommerce.Models.Entities
 {
     public class Product
     {
@@ -13,5 +15,9 @@
         public Category Category { get; set; }
 
         public decimal Price { get; set; }
+
+        public int UnitId {  get; set; }
+        [ValidateNever]
+        public Unit Unit { get; set; }
     }
 }

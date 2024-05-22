@@ -1,19 +1,33 @@
-﻿using LifeEcommerce.Models;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using LifeEcommerce.Helpers.Models;
+using LifeEcommerce.Models;
 using Newtonsoft.Json;
 
 namespace LifeEcommerce.Services
 {
-    public static class ImageUploadService
+    public class ImageUploadService
     {
-
-        public static string UploadPicture(string imagePath)
+        public async Task<string> UploadPicture(IFormFile file, IConfiguration configuration)
         {
-            // Replace with your actual Imgur API key
-            const string ImgurApiKey = "YOUR_API_KEY";
+            #region Imgur
+            //// Replace with your actual Imgur API key
+            //const string ImgurApiKey = "d64aa6e883b4821";
 
-            var imageUrl = UploadToImgur(imagePath, ImgurApiKey);
+            //var imageUrl = UploadToImgur(imagePath, ImgurApiKey);
 
-            return imageUrl.Result;
+            //return imageUrl.Result;
+
+            #endregion
+
+            var uploadPicture = await UploadToBlob(file, configuration);
+
+            //var blobConfiguration = configuration.GetSection(nameof(BlobConfiguration)).Get<BlobConfiguration>();
+
+
+            var imageUrl = $"https://gjirafatechiam.eu-1.cdn77-storage.com/LIFE/{file.FileName}";
+
+            return imageUrl;
         }
 
         public static async Task<string> UploadToImgur(string imagePath, string apiKey)
@@ -41,6 +55,32 @@ namespace LifeEcommerce.Services
 
                 return responseModel.data.link;
             }
+        }
+
+        public async Task<PutObjectResponse> UploadToBlob(IFormFile file, IConfiguration configuration)
+        {
+            var blobConfiguration = configuration.GetSection(nameof(BlobConfiguration)).Get<BlobConfiguration>();
+
+            var config = new AmazonS3Config()
+            {
+                ServiceURL = blobConfiguration.ServiceUrl
+            };
+
+            var s3client = new AmazonS3Client(blobConfiguration.AccessKey, blobConfiguration.SecretKey, config);
+
+            var keyName = $"{blobConfiguration.DefaultFolder}{file.FileName}";
+
+            var fileStream = file.OpenReadStream();
+            var request = new PutObjectRequest
+            {
+                BucketName = blobConfiguration.BucketName,
+                Key = keyName,
+                InputStream = fileStream,
+                ContentType = file.ContentType,
+                CannedACL = S3CannedACL.PublicRead
+            };
+
+            return await s3client.PutObjectAsync(request);
         }
     }
 }

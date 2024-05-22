@@ -1,6 +1,4 @@
-﻿using LifeEcommerce.Models.Entities;
-
-namespace LifeEcommerce.Models.Dtos.Product
+﻿namespace LifeEcommerce.Models.Dtos.Product
 {
     public class ProductDto
     {
