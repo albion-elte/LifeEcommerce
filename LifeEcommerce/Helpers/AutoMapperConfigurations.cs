@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LifeEcommerce.Models.Dtos.Category;
 using LifeEcommerce.Models.Dtos.Product;
 using LifeEcommerce.Models.Entities;
 
@@ -13,6 +14,13 @@ namespace LifeEcommerce.Helpers
 
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<ProductDto, Product>().ReverseMap();
+
+
+            CreateMap<Category, CategoryCreateDto>().ReverseMap();
+            CreateMap<CategoryCreateDto, Category>().ReverseMap();
+
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<CategoryDto, Category>().ReverseMap();
         }
     }
 }

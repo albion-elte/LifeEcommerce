@@ -1,6 +1,7 @@
 using AutoMapper;
 using LifeEcommerce.Data;
 using LifeEcommerce.Data.Repository.IRepository;
+using LifeEcommerce.Data.UnitOfWork;
 using LifeEcommerce.Helpers;
 using LifeEcommerce.Services;
 using LifeEcommerce.Services.IService;
@@ -21,8 +22,11 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddDbContext<LifeEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<ImageUploadService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)

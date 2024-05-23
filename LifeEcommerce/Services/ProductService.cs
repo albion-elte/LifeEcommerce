@@ -1,31 +1,35 @@
 ﻿using AutoMapper;
 using LifeEcommerce.Data.Repository.IRepository;
+using LifeEcommerce.Data.UnitOfWork;
 using LifeEcommerce.Helpers;
 using LifeEcommerce.Models.Dtos.Product;
 using LifeEcommerce.Models.Entities;
+using LifeEcommerce.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace LifeEcommerce.Services.IService
+namespace LifeEcommerce.Services
 {
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task CreateProduct(ProductCreateDto product)
         {
             var productToCreate = _mapper.Map<Product>(product);
-             
-            _productRepository.Create(productToCreate);
 
-            await _productRepository.SaveChangesAsync();
+            _unitOfWork.Repository<Product>().Create(productToCreate);
+
+            _unitOfWork.Complete();
         }
 
         public async Task DeleteProduct(int id)
@@ -64,7 +68,7 @@ namespace LifeEcommerce.Services.IService
 
             IQueryable<Product> products;
 
-            if (categoryId is not 0) 
+            if (categoryId is not 0)
             {
                 products = _productRepository.GetByCondition(x => x.CategoryId == categoryId);
             }
@@ -94,7 +98,7 @@ namespace LifeEcommerce.Services.IService
         {
             var productToUpdate = await GetProduct(product.Id);
 
-            if (productToUpdate != null) 
+            if (productToUpdate != null)
             {
                 productToUpdate.Price = product.Price;
                 productToUpdate.Seller = product.Seller;
