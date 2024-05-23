@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LifeEcommerce.Models.Entities
 {
@@ -11,6 +10,9 @@ namespace LifeEcommerce.Models.Entities
         public DateTime ShippingDate { get; set; }
         public DateTime PaymentDate { get; set; }
         public decimal OrderTotal { get; set; }
+        public string OrderStatus { get; set; }
+        public string TrackingId { get; set; }
+        public string Carrier { get; set; }
 
         [Required]
         [Phone]
