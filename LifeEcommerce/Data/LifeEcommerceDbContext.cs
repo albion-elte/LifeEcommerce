@@ -15,5 +15,6 @@ namespace LifeEcommerce.Data
         public DbSet<Unit> Units { get; set; }
         public DbSet<OrderData> OrdersData { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ShoppingCard> ShoppingCards { get; set; }
     }
 }
