@@ -1,11 +1,15 @@
 using LifeEcommerce.Models.Dtos.Product;
 using LifeEcommerce.Services;
 using LifeEcommerce.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace LifeEcommerce.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
@@ -13,13 +17,16 @@ namespace LifeEcommerce.Controllers
         private readonly IProductService _productService;
         private readonly ImageUploadService _imageUploadService;
         private readonly IConfiguration _configuration;
+        private readonly IStringLocalizer<ProductsController> _stringLocalizer;
 
-        public ProductsController(ILogger<ProductsController> logger, IProductService productService, ImageUploadService imageUploadService, IConfiguration configuration)
+
+        public ProductsController(ILogger<ProductsController> logger, IProductService productService, ImageUploadService imageUploadService, IConfiguration configuration, IStringLocalizer<ProductsController> stringLocalizer)
         {
             _logger = logger;
             _productService = productService;
             _imageUploadService = imageUploadService;
             _configuration = configuration;
+            _stringLocalizer = stringLocalizer;
         }
 
         [HttpGet(Name = "ProductsListView")]
@@ -65,7 +72,11 @@ namespace LifeEcommerce.Controllers
         {
             await _productService.CreateProduct(productToCreate);
 
-            return Ok();
+            //var message = _stringLocalizer["ProductCreatedMessage"];
+            var message = _stringLocalizer.GetString("ProductCreatedMessage").Value;
+
+            //return Ok(message.Value);
+            return Ok(message);
         }
 
         [HttpPut(Name = "UpdateProduct")]
@@ -90,6 +101,34 @@ namespace LifeEcommerce.Controllers
             var uploadedImage = await _imageUploadService.UploadPicture(file, _configuration);
 
             return Ok(uploadedImage);
+        }
+
+        [NonAction]
+        public static List<string> ListOfCountries()
+        {
+            List<string> countryList = new List<string>();
+            CultureInfo[] countryInfoList = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            foreach (CultureInfo countryInfo in countryInfoList)
+            {
+                try
+                {
+                    RegionInfo R = new RegionInfo(countryInfo.LCID);
+                    if (!(countryList.Contains(R.EnglishName)))
+                    {
+                        countryList.Add(R.EnglishName);
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            countryList.Add("Kosovo");
+
+            countryList.Sort();
+
+            return countryList;
         }
     }
 }
