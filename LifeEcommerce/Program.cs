@@ -4,6 +4,7 @@ using LifeEcommerce.Data;
 using LifeEcommerce.Data.Repository.IRepository;
 using LifeEcommerce.Data.UnitOfWork;
 using LifeEcommerce.Helpers;
+using LifeEcommerce.Models.Entities;
 using LifeEcommerce.Services;
 using LifeEcommerce.Services.IService;
 using LifeProduct.Data.Repository;
@@ -12,9 +13,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+IConfiguration configuration = builder.Configuration;
 
 var mapperConfiguration = new MapperConfiguration(
                         mc => mc.AddProfile(new AutoMapperConfigurations()));
@@ -62,10 +67,60 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = "https://sso-sts.gjirafa.dev",
-        ValidAudience = "life_2024_api",
+        ValidAudience = configuration["AuthoritySettings:Scope"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("4a9db740-2460-471a-b3a1-6d86bb99b279")),
         ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            context.HttpContext.User = context.Principal ?? new ClaimsPrincipal();
+
+            var userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var firstName = context.HttpContext.User.FindFirst(ClaimTypes.GivenName)?.Value;
+            var lastName = context.HttpContext.User.FindFirst(ClaimTypes.Surname)?.Value;
+            var email = context.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            var gender = context.HttpContext.User.FindFirst(ClaimTypes.Gender)?.Value;
+            var birthdate = context.HttpContext.User.FindFirst(ClaimTypes.DateOfBirth)?.Value;
+            var phoneNumber = context.HttpContext.User.FindFirst("phone_number")?.Value;
+
+            DateTime birthdateParsed = DateTime.Parse(birthdate);
+
+            var userService = context.HttpContext.RequestServices.GetService<IUnitOfWork>();
+
+            var existingUser = userService.Repository<User>().GetById(x => x.Id == userId).FirstOrDefault();
+
+            if(existingUser == null)
+            {
+                var userToBeAdded = new User
+                {
+                    Id = userId,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    EmailAddress = email,
+                    Gender = gender,
+                    PhoneNumber = phoneNumber ?? " ",
+                    DateOfBirth = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                userService.Repository<User>().Create(userToBeAdded);
+            }
+            else
+            {
+                existingUser.FirstName = firstName;
+                existingUser.LastName = lastName;
+                existingUser.PhoneNumber = phoneNumber;
+
+                userService.Repository<User>().Update(existingUser);
+            }
+
+            userService.Complete();
+        }
+    };
+
+    options.ForwardDefaultSelector = Selector.ForwardReferenceToken("token");
 });
 
 builder.Services.AddControllers();
