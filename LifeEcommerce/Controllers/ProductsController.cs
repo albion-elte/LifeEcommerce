@@ -44,12 +44,12 @@ namespace LifeEcommerce.Controllers
 
             //try
             //{
-            //    int a = 1;
-            //    int b = 0;
+                int a = 1;
+                int b = 0;
 
-            //    int c = a / b;
+                int c = a / b;
             //}
-            //catch(Exception ex)
+            //catch (Exception ex)
             //{
             //    _logger.LogError(ex, "Error Life");
             //    _logger.LogInformation(ex, "Information Life");

@@ -9,6 +9,7 @@ using LifeEcommerce.Services;
 using LifeEcommerce.Services.IService;
 using LifeProduct.Data.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -35,6 +36,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<ImageUploadService>();
+
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -106,6 +109,30 @@ builder.Services.AddAuthentication(options =>
                 };
 
                 userService.Repository<User>().Create(userToBeAdded);
+
+                var emailService = context.HttpContext.RequestServices.GetService<IEmailSender>();
+                //var hostEnvironment = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
+
+                if(emailService != null) 
+                {
+                    var subject = "Welcome to Life Ecommerce";
+                    var htmlBody = string.Empty;
+
+                    using (StreamReader streamReader = File.OpenText("Templates/EmailTemplate.html"))
+                    {
+                        htmlBody = streamReader.ReadToEnd();
+                    }
+                    
+                    string messageBody = string.Format(htmlBody, "Welcome to life Ecommerce", 
+                        "Greetings", 
+                        userToBeAdded.FirstName, 
+                        "An account has been created for you with the following email:", 
+                        userToBeAdded.EmailAddress, 
+                        "Best regards,",        
+                        "Life Team");
+
+                    emailService.SendEmailAsync(userToBeAdded.EmailAddress, subject, messageBody);
+                }
             }
             else
             {
@@ -157,6 +184,8 @@ var localizationOptions = new RequestLocalizationOptions()
 localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
 
 app.UseRequestLocalization(localizationOptions);
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
