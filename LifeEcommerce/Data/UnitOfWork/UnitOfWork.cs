@@ -1,6 +1,5 @@
 ﻿using LifeEcommerce.Data.Repository;
 using LifeEcommerce.Data.Repository.IRepository;
-using LifeEcommerce.Models.Entities;
 using System.Collections;
 
 namespace LifeEcommerce.Data.UnitOfWork

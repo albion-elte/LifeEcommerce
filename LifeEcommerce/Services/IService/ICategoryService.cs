@@ -1,6 +1,5 @@
 ﻿using LifeEcommerce.Helpers;
 using LifeEcommerce.Models.Dtos.Category;
-using LifeEcommerce.Models.Entities;
 
 namespace LifeEcommerce.Services.IService
 {
