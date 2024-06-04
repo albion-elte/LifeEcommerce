@@ -4,7 +4,6 @@ using LifeEcommerce.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using System.Globalization;
 
 namespace LifeEcommerce.Controllers
 {
@@ -41,20 +40,6 @@ namespace LifeEcommerce.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = await _productService.GetAllProducts();
-
-            //try
-            //{
-                int a = 1;
-                int b = 0;
-
-                int c = a / b;
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(ex, "Error Life");
-            //    _logger.LogInformation(ex, "Information Life");
-            //    _logger.LogDebug(ex, "Debug Life");
-            //}
 
             return Ok(products);
         }
@@ -101,34 +86,6 @@ namespace LifeEcommerce.Controllers
             var uploadedImage = await _imageUploadService.UploadPicture(file, _configuration);
 
             return Ok(uploadedImage);
-        }
-
-        [NonAction]
-        public static List<string> ListOfCountries()
-        {
-            List<string> countryList = new List<string>();
-            CultureInfo[] countryInfoList = CultureInfo.GetCultures(CultureTypes.AllCultures);
-            foreach (CultureInfo countryInfo in countryInfoList)
-            {
-                try
-                {
-                    RegionInfo R = new RegionInfo(countryInfo.LCID);
-                    if (!(countryList.Contains(R.EnglishName)))
-                    {
-                        countryList.Add(R.EnglishName);
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-
-            countryList.Add("Kosovo");
-
-            countryList.Sort();
-
-            return countryList;
         }
     }
 }

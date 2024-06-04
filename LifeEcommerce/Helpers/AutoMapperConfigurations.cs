@@ -21,6 +21,12 @@ namespace LifeEcommerce.Helpers
 
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<CategoryDto, Category>().ReverseMap();
+
+            CreateMap<ShoppingCard, ShoppingCardCreateDto>().ReverseMap();
+            CreateMap<ShoppingCardCreateDto, ShoppingCard>().ReverseMap();
+
+            CreateMap<ShoppingCard, ShoppingCardDto>().ReverseMap();
+            CreateMap<ShoppingCardDto, ShoppingCard>().ReverseMap();
         }
     }
 }

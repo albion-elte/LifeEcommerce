@@ -27,12 +27,7 @@ namespace LifeEcommerce.Controllers
         [HttpGet(Name = "CategorysListView")]
         public async Task<IActionResult> CategorysListView(string? searchText, int page = 1, int pageSize = 10)
         {
-
-
-
-            var categories = await _categoryService.CategoriesListView(searchText, page, pageSize);
-
-            
+            var categories = await _categoryService.CategoriesListView(searchText, page, pageSize);   
 
             return Ok(categories);
         }

@@ -17,6 +17,7 @@ namespace LifeEcommerce.Helpers
     {
         public static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IShoppingCardService, ShoppingCardService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -77,7 +78,7 @@ namespace LifeEcommerce.Helpers
                         var birthdate = context.HttpContext.User.FindFirst(ClaimTypes.DateOfBirth)?.Value;
                         var phoneNumber = context.HttpContext.User.FindFirst("phone_number")?.Value;
 
-                        DateTime birthdateParsed = DateTime.Parse(birthdate);
+                        //DateTime birthdateParsed = DateTime.Parse(birthdate);
 
                         var userService = context.HttpContext.RequestServices.GetService<IUnitOfWork>();
 
