@@ -4,15 +4,15 @@ namespace LifeEcommerce.Models.Entities
 {
     public class OrderData
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public DateTime OrderDate { get; set; }
         public DateTime ShippingDate { get; set; }
         public DateTime PaymentDate { get; set; }
         public decimal OrderTotal { get; set; }
         public string OrderStatus { get; set; }
-        public string TrackingId { get; set; }
-        public string Carrier { get; set; }
+        public string TrackingId { get; set; } = Guid.NewGuid().ToString();
+        public string Carrier { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [Phone]

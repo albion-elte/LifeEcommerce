@@ -5,12 +5,15 @@ namespace LifeEcommerce.Models.Entities
     public class OrderDetail
     {
         public int Id { get; set; }
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
         [ForeignKey("OrderId")]
         public OrderData OrderData { get; set; }
 
         public int ProductId {  get; set; }
         public Product Product { get; set; }
+
+        public string UserId { get; set; }
+        public User User { get; set; }
 
         public int Count { get; set; }
         public decimal Price { get; set; }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LifeEcommerce.Models.Dtos.Category;
+using LifeEcommerce.Models.Dtos.Order;
 using LifeEcommerce.Models.Dtos.Product;
 using LifeEcommerce.Models.Entities;
 
@@ -27,6 +28,9 @@ namespace LifeEcommerce.Helpers
 
             CreateMap<ShoppingCard, ShoppingCardDto>().ReverseMap();
             CreateMap<ShoppingCardDto, ShoppingCard>().ReverseMap();
+
+            CreateMap<OrderData, OrderCreateDto>().ReverseMap();
+            CreateMap<OrderCreateDto, OrderData>().ReverseMap();
         }
     }
 }

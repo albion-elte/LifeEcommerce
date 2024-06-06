@@ -20,6 +20,7 @@ namespace LifeEcommerce.Helpers
             services.AddScoped<IShoppingCardService, ShoppingCardService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddTransient<ImageUploadService>();
             services.AddSingleton<IEmailSender, EmailSender>();

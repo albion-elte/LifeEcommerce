@@ -22,7 +22,7 @@ builder.Services.AddServices();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-builder.Logging.AddLogging(builder.Configuration);
+//builder.Logging.AddLogging(builder.Configuration);
 
 builder.Services.RegisterAuthentication(builder.Configuration);
 
