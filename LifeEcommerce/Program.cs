@@ -1,12 +1,17 @@
 using AutoMapper;
 using LifeEcommerce.Data;
 using LifeEcommerce.Helpers;
+using LifeEcommerce.Services;
+using LifeEcommerce.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-IConfiguration configuration = builder.Configuration;
+
+//IConfiguration configuration = builder.Configuration;
+
+IConfiguration configuration = args.GetConfiguration();
 
 var mapperConfiguration = new MapperConfiguration(
                         mc => mc.AddProfile(new AutoMapperConfigurations()));
@@ -14,17 +19,21 @@ var mapperConfiguration = new MapperConfiguration(
 IMapper mapper = mapperConfiguration.CreateMapper();
 
 builder.Services.AddSingleton(mapper);
+builder.Services.AddServices(configuration);
 
 // Add services to the container.
 builder.Services.AddDbContext<LifeEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddServices();
+IServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
+
+await serviceProvider.ApplyDbMigrationsWithDataSeedAsync();
+
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 //builder.Logging.AddLogging(builder.Configuration);
 
-builder.Services.RegisterAuthentication(builder.Configuration);
+builder.Services.RegisterAuthentication(configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -84,6 +93,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+var dbInitialzer = serviceProvider.GetService<IDbInitializer>();
+dbInitialzer.Initialize();
 
 app.MapControllers();
 

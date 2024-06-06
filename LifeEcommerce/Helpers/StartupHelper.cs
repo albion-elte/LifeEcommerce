@@ -10,12 +10,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using LifeEcommerce.Models.Entities;
+using System.Configuration;
+using LifeEcommerce.Helpers.Models;
 
 namespace LifeEcommerce.Helpers
 {
     public static class StartupHelper
     {
-        public static void AddServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IShoppingCardService, ShoppingCardService>();
             services.AddScoped<IProductService, ProductService>();
@@ -25,6 +27,11 @@ namespace LifeEcommerce.Helpers
             services.AddTransient<ImageUploadService>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
+
+            var seedDataConfiguration = CreateSeedDataConfiguration(configuration);
+
+            services.AddSingleton(seedDataConfiguration);
         }
 
         public static void AddLogging(this ILoggingBuilder logging, IConfiguration configuration)
@@ -139,6 +146,28 @@ namespace LifeEcommerce.Helpers
 
                 options.ForwardDefaultSelector = Selector.ForwardReferenceToken("token");
             });
+        }
+
+        public static DataSeed CreateSeedDataConfiguration(IConfiguration configuration)
+        {
+            var seedDataConfiguration = new DataSeed();
+            seedDataConfiguration.Users = configuration.GetSection("DataSeed:Users").Get<List<User>>();
+            return seedDataConfiguration;
+        }
+
+        public static IConfiguration GetConfiguration(this string[] args)
+        {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            var isDevelopment = environment == Environments.Development;
+
+            var configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("dataseed.json", optional: true, reloadOnChange: true);
+
+            return configurationBuilder.Build();
         }
     }
 }

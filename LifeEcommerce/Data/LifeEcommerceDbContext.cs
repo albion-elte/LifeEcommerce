@@ -5,8 +5,8 @@ namespace LifeEcommerce.Data
 {
     public class LifeEcommerceDbContext : DbContext
     {
-        public LifeEcommerceDbContext(DbContextOptions<LifeEcommerceDbContext> options) : base(options) 
-        { 
+        public LifeEcommerceDbContext(DbContextOptions<LifeEcommerceDbContext> options) : base(options)
+        {
         }
 
         public DbSet<User> Users { get; set; }
@@ -16,5 +16,11 @@ namespace LifeEcommerce.Data
         public DbSet<OrderData> OrdersData { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ShoppingCard> ShoppingCards { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                        .HasData( new User { }, new User { });
+        }
     }
 }
