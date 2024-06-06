@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeEcommerce", "LifeEcommerce\LifeEcommerce.csproj", "{2337399F-1A42-4477-8DC0-DC51A8C359D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeEcommerce", "LifeEcommerce\LifeEcommerce.csproj", "{2337399F-1A42-4477-8DC0-DC51A8C359D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeEcommerceBackgroundServcices", "LifeEcommerceBackgroundServcices\LifeEcommerceBackgroundServcices.csproj", "{540EF655-54F8-42EE-A868-0CAC196D9EDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2337399F-1A42-4477-8DC0-DC51A8C359D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2337399F-1A42-4477-8DC0-DC51A8C359D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2337399F-1A42-4477-8DC0-DC51A8C359D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{540EF655-54F8-42EE-A868-0CAC196D9EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{540EF655-54F8-42EE-A868-0CAC196D9EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{540EF655-54F8-42EE-A868-0CAC196D9EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{540EF655-54F8-42EE-A868-0CAC196D9EDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

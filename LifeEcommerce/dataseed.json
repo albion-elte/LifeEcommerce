@@ -1,0 +1,14 @@
+{
+  "DataSeed": {
+    "Users": [
+      {
+        "FirstName": "Albion",
+        "LastName": "Berisha",
+        "EmailAddress": "albion.b@gjirafa.com",
+        "DateOfBirth": "11/11/2024",
+        "Gender": "M",
+        "PhoneNumber": "123455"
+      }
+    ]
+  }
+}

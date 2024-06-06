@@ -1,12 +1,13 @@
 using AutoMapper;
 using LifeEcommerce.Data;
 using LifeEcommerce.Helpers;
+using LifeEcommerce.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-IConfiguration configuration = builder.Configuration;
+IConfiguration configuration = args.CreateConfiguration();
 
 var mapperConfiguration = new MapperConfiguration(
                         mc => mc.AddProfile(new AutoMapperConfigurations()));
@@ -18,7 +19,12 @@ builder.Services.AddSingleton(mapper);
 // Add services to the container.
 builder.Services.AddDbContext<LifeEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddServices();
+builder.Services.AddServices(configuration);
+
+IServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
+
+//await DbMigrationsHelper.ApplyDbMigrationsWithDataSeed(serviceProvider);
+await serviceProvider.ApplyDbMigrationsWithDataSeed();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -84,6 +90,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+var dbInitializer = serviceProvider.GetRequiredService<IDbInitializer>();
+dbInitializer.Initialize();
 
 app.MapControllers();
 
